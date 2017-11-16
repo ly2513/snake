@@ -1,12 +1,6 @@
 <?php
-/**
- * User: yongli
- * Date: 17/11/14
- * Time: 14:21
- * Email: yong.li@szypwl.com
- * Copyright: 深圳优品未来科技有限公司
- */
-namespace Database;
+
+namespace Snake\Database;
 
 use Closure;
 
@@ -15,27 +9,24 @@ interface ConnectionInterface
     /**
      * Begin a fluent query against a database table.
      *
-     * @param $table
-     *
-     * @return mixed
+     * @param  string  $table
+     * @return \Snake\Database\Query\Builder
      */
     public function table($table);
 
     /**
      * Get a new raw query expression.
      *
-     * @param $value
-     *
-     * @return mixed
+     * @param  mixed  $value
+     * @return \Snake\Database\Query\Expression
      */
     public function raw($value);
-    
+
     /**
      * Run a select statement and return a single result.
      *
-     * @param       $query
-     * @param array $bindings
-     *
+     * @param  string  $query
+     * @param  array   $bindings
      * @return mixed
      */
     public function selectOne($query, $bindings = []);

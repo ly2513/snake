@@ -1,21 +1,20 @@
 <?php
-/**
- * User: yongli
- * Date: 17/11/14
- * Time: 10:51
- * Email: yong.li@szypwl.com
- * Copyright: 深圳优品未来科技有限公司
- */
-namespace Database;
+
+namespace Snake\Database;
 
 use PDO;
+use Snake\Database\Schema\MySqlBuilder;
+use Snake\Database\Query\Processors\MySqlProcessor;
+use Doctrine\DBAL\Driver\PDOMySql\Driver as DoctrineDriver;
+use Snake\Database\Query\Grammars\MySqlGrammar as QueryGrammar;
+use Snake\Database\Schema\Grammars\MySqlGrammar as SchemaGrammar;
 
 class MySqlConnection extends Connection
 {
     /**
      * Get the default query grammar instance.
      *
-     * @return Grammar
+     * @return \Snake\Database\Query\Grammars\MySqlGrammar
      */
     protected function getDefaultQueryGrammar()
     {
@@ -23,9 +22,33 @@ class MySqlConnection extends Connection
     }
 
     /**
+     * Get a schema builder instance for the connection.
+     *
+     * @return \Snake\Database\Schema\MySqlBuilder
+     */
+    public function getSchemaBuilder()
+    {
+        if (is_null($this->schemaGrammar)) {
+            $this->useDefaultSchemaGrammar();
+        }
+
+        return new MySqlBuilder($this);
+    }
+
+    /**
+     * Get the default schema grammar instance.
+     *
+     * @return \Snake\Database\Schema\Grammars\MySqlGrammar
+     */
+    protected function getDefaultSchemaGrammar()
+    {
+        return $this->withTablePrefix(new SchemaGrammar);
+    }
+
+    /**
      * Get the default post processor instance.
      *
-     * @return MySqlProcessor
+     * @return \Snake\Database\Query\Processors\MySqlProcessor
      */
     protected function getDefaultPostProcessor()
     {
@@ -35,106 +58,27 @@ class MySqlConnection extends Connection
     /**
      * Get the Doctrine DBAL driver.
      *
-     * @return Driver
+     * @return \Doctrine\DBAL\Driver\PDOMySql\Driver
      */
     protected function getDoctrineDriver()
     {
-        return new Driver;
+        return new DoctrineDriver;
     }
 
     /**
      * Bind values to their parameters in the given statement.
      *
      * @param  \PDOStatement $statement
-     * @param  array         $bindings
-     *
+     * @param  array  $bindings
      * @return void
      */
     public function bindValues($statement, $bindings)
     {
         foreach ($bindings as $key => $value) {
-            $statement->bindValue(is_string($key) ? $key : $key + 1, $value,
-                is_int($value) || is_float($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
-        }
-    }
-}
-
-/**
- * PDO MySql driver.
- *
- * @since 2.0
- */
-class Driver
-{
-    /**
-     * {@inheritdoc}
-     */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
-    {
-        try {
-            $conn = new PDOConnection(
-                $this->constructPdoDsn($params),
-                $username,
-                $password,
-                $driverOptions
+            $statement->bindValue(
+                is_string($key) ? $key : $key + 1, $value,
+                is_int($value) || is_float($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
-        } catch (\PDOException $e) {
-            throw \DBALException::driverException($this, $e);
         }
-
-        return $conn;
-    }
-
-    /**
-     * Constructs the MySql PDO DSN.
-     *
-     * @param array $params
-     *
-     * @return string The DSN.
-     */
-    protected function constructPdoDsn(array $params)
-    {
-        $dsn = 'mysql:';
-        if (isset($params['host']) && $params['host'] != '') {
-            $dsn .= 'host=' . $params['host'] . ';';
-        }
-        if (isset($params['port'])) {
-            $dsn .= 'port=' . $params['port'] . ';';
-        }
-        if (isset($params['dbname'])) {
-            $dsn .= 'dbname=' . $params['dbname'] . ';';
-        }
-        if (isset($params['unix_socket'])) {
-            $dsn .= 'unix_socket=' . $params['unix_socket'] . ';';
-        }
-        if (isset($params['charset'])) {
-            $dsn .= 'charset=' . $params['charset'] . ';';
-        }
-
-        return $dsn;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'pdo_mysql';
-    }
-}
-
-class MySqlProcessor extends Processor
-{
-    /**
-     * Process the results of a column listing query.
-     *
-     * @param  array  $results
-     * @return array
-     */
-    public function processColumnListing($results)
-    {
-        return array_map(function ($result) {
-            return with((object) $result)->column_name;
-        }, $results);
     }
 }
