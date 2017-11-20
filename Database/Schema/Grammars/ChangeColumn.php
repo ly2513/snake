@@ -34,7 +34,9 @@ class ChangeColumn
         }
 
         $tableDiff = static::getChangedDiff(
-            $grammar, $blueprint, $schema = $connection->getDoctrineSchemaManager()
+            $grammar,
+            $blueprint,
+            $schema = $connection->getDoctrineSchemaManager()
         );
 
         if ($tableDiff !== false) {
@@ -57,7 +59,8 @@ class ChangeColumn
         $current = $schema->listTableDetails($grammar->getTablePrefix().$blueprint->getTable());
 
         return (new Comparator)->diffTable(
-            $current, static::getTableWithColumnChanges($blueprint, $current)
+            $current,
+            static::getTableWithColumnChanges($blueprint, $current)
         );
     }
 
@@ -100,7 +103,8 @@ class ChangeColumn
     protected static function getDoctrineColumn(Table $table, Fluent $fluent)
     {
         return $table->changeColumn(
-            $fluent['name'], static::getDoctrineColumnChangeOptions($fluent)
+            $fluent['name'],
+            static::getDoctrineColumnChangeOptions($fluent)
         )->getColumn($fluent['name']);
     }
 

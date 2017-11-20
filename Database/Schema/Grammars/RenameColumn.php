@@ -23,13 +23,18 @@ class RenameColumn
     public static function compile(Grammar $grammar, Blueprint $blueprint, Fluent $command, Connection $connection)
     {
         $column = $connection->getDoctrineColumn(
-            $grammar->getTablePrefix().$blueprint->getTable(), $command->from
+            $grammar->getTablePrefix().$blueprint->getTable(),
+            $command->from
         );
 
         $schema = $connection->getDoctrineSchemaManager();
 
         return (array) $schema->getDatabasePlatform()->getAlterTableSQL(static::getRenamedDiff(
-            $grammar, $blueprint, $command, $column, $schema
+            $grammar,
+            $blueprint,
+            $command,
+            $column,
+            $schema
         ));
     }
 
@@ -46,7 +51,9 @@ class RenameColumn
     protected static function getRenamedDiff(Grammar $grammar, Blueprint $blueprint, Fluent $command, Column $column, SchemaManager $schema)
     {
         return static::setRenamedColumns(
-            $grammar->getDoctrineTableDiff($blueprint, $schema), $command, $column
+            $grammar->getDoctrineTableDiff($blueprint, $schema),
+            $command,
+            $column
         );
     }
 

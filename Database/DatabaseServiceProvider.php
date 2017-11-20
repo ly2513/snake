@@ -80,7 +80,8 @@ class DatabaseServiceProvider extends ServiceProvider
 
         $this->app->singleton(EloquentFactory::class, function ($app) {
             return EloquentFactory::construct(
-                $app->make(FakerGenerator::class), $this->app->databasePath('factories')
+                $app->make(FakerGenerator::class),
+                $this->app->databasePath('factories')
             );
         });
     }

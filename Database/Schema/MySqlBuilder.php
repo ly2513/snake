@@ -15,7 +15,8 @@ class MySqlBuilder extends Builder
         $table = $this->connection->getTablePrefix().$table;
 
         return count($this->connection->select(
-            $this->grammar->compileTableExists(), [$this->connection->getDatabaseName(), $table]
+            $this->grammar->compileTableExists(),
+            [$this->connection->getDatabaseName(), $table]
         )) > 0;
     }
 
@@ -30,7 +31,8 @@ class MySqlBuilder extends Builder
         $table = $this->connection->getTablePrefix().$table;
 
         $results = $this->connection->select(
-            $this->grammar->compileColumnListing(), [$this->connection->getDatabaseName(), $table]
+            $this->grammar->compileColumnListing(),
+            [$this->connection->getDatabaseName(), $table]
         );
 
         return $this->connection->getPostProcessor()->processColumnListing($results);

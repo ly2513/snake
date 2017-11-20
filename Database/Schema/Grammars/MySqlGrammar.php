@@ -56,21 +56,27 @@ class MySqlGrammar extends Grammar
     public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection)
     {
         $sql = $this->compileCreateTable(
-            $blueprint, $command, $connection
+            $blueprint,
+            $command,
+            $connection
         );
 
         // Once we have the primary SQL, we can add the encoding option to the SQL for
         // the table.  Then, we can check if a storage engine has been supplied for
         // the table. If so, we will add the engine declaration to the SQL query.
         $sql = $this->compileCreateEncoding(
-            $sql, $connection, $blueprint
+            $sql,
+            $connection,
+            $blueprint
         );
 
         // Finally, we will append the engine configuration onto this SQL statement as
         // the final thing we do before returning this finished SQL. Once this gets
         // added the query will be ready to execute against the real connections.
         return $this->compileCreateEngine(
-            $sql, $connection, $blueprint
+            $sql,
+            $connection,
+            $blueprint
         );
     }
 
@@ -84,7 +90,8 @@ class MySqlGrammar extends Grammar
      */
     protected function compileCreateTable($blueprint, $command, $connection)
     {
-        return sprintf('%s table %s (%s)',
+        return sprintf(
+            '%s table %s (%s)',
             $blueprint->temporary ? 'create temporary' : 'create',
             $this->wrapTable($blueprint),
             implode(', ', $this->getColumns($blueprint))
@@ -215,7 +222,8 @@ class MySqlGrammar extends Grammar
      */
     protected function compileKey(Blueprint $blueprint, Fluent $command, $type)
     {
-        return sprintf('alter table %s add %s %s%s(%s)',
+        return sprintf(
+            'alter table %s add %s %s%s(%s)',
             $this->wrapTable($blueprint),
             $type,
             $this->wrap($command->index),

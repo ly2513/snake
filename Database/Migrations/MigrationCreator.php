@@ -1,18 +1,18 @@
 <?php
 
-namespace Illuminate\Database\Migrations;
+namespace Snake\Database\Migrations;
 
 use Closure;
-use Illuminate\Support\Str;
+use Snake\Support\Str;
 use InvalidArgumentException;
-use Illuminate\Filesystem\Filesystem;
+use Snake\Filesystem\Filesystem;
 
 class MigrationCreator
 {
     /**
      * The filesystem instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var \Snake\Filesystem\Filesystem
      */
     protected $files;
 
@@ -26,7 +26,7 @@ class MigrationCreator
     /**
      * Create a new migration creator instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param  \Snake\Filesystem\Filesystem  $files
      * @return void
      */
     public function __construct(Filesystem $files)
@@ -92,9 +92,7 @@ class MigrationCreator
     {
         if (is_null($table)) {
             return $this->files->get($this->stubPath().'/blank.stub');
-        }
-
-        // We also have stubs for creating new tables and modifying existing tables
+        } // We also have stubs for creating new tables and modifying existing tables
         // to save the developer some typing when they are creating a new tables
         // or modifying existing tables. We'll grab the appropriate stub here.
         else {
@@ -195,7 +193,7 @@ class MigrationCreator
     /**
      * Get the filesystem instance.
      *
-     * @return \Illuminate\Filesystem\Filesystem
+     * @return \Snake\Filesystem\Filesystem
      */
     public function getFilesystem()
     {

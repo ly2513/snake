@@ -36,12 +36,12 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
         'average', 'avg', 'contains', 'each', 'every', 'filter', 'first', 'flatMap',
         'keyBy', 'map', 'partition', 'reject', 'sortBy', 'sortByDesc', 'sum',
     ];
-
+    
     /**
      * Create a new collection.
+     * Collection constructor.
      *
-     * @param  mixed  $items
-     * @return void
+     * @param array $items
      */
     public function __construct($items = [])
     {
@@ -265,9 +265,7 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
      */
     public function crossJoin(...$lists)
     {
-        return new static(Arr::crossJoin(
-            $this->items, ...array_map([$this, 'getArrayableItems'], $lists)
-        ));
+        return new static(Arr::crossJoin($this->items, ...array_map([$this, 'getArrayableItems'], $lists)));
     }
 
     /**
@@ -488,15 +486,23 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
                 switch ($operator) {
                     default:
                     case '=':
-                    case '==':  return $retrieved == $value;
+                    case '==':
+                        return $retrieved == $value;
                     case '!=':
-                    case '<>':  return $retrieved != $value;
-                    case '<':   return $retrieved < $value;
-                    case '>':   return $retrieved > $value;
-                    case '<=':  return $retrieved <= $value;
-                    case '>=':  return $retrieved >= $value;
-                    case '===': return $retrieved === $value;
-                    case '!==': return $retrieved !== $value;
+                    case '<>':
+                        return $retrieved != $value;
+                    case '<':
+                        return $retrieved < $value;
+                    case '>':
+                        return $retrieved > $value;
+                    case '<=':
+                        return $retrieved <= $value;
+                    case '>=':
+                        return $retrieved >= $value;
+                    case '===':
+                        return $retrieved === $value;
+                    case '!==':
+                        return $retrieved !== $value;
                 }
             } catch (Exception $e) {
                 return false;
@@ -754,7 +760,8 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
     public function intersectByKeys($items)
     {
         return new static(array_intersect_key(
-            $this->items, $this->getArrayableItems($items)
+            $this->items,
+            $this->getArrayableItems($items)
         ));
     }
 

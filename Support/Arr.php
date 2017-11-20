@@ -4,6 +4,7 @@ namespace Snake\Support;
 
 use ArrayAccess;
 use InvalidArgumentException;
+
 //use Snake\Support\Traits\Macroable;
 
 class Arr
@@ -274,7 +275,6 @@ class Arr
     public static function get($array, $key, $default = null)
     {
         if (! static::accessible($array)) {
-
             return $default instanceof \Closure ? $default() : $default;
         }
 

@@ -109,7 +109,8 @@ trait InteractsWithPivotTable
         // touching until after the entire operation is complete so we don't fire a
         // ton of touch operations until we are totally done syncing the records.
         $changes = array_merge(
-            $changes, $this->attachNew($records, $current, false)
+            $changes,
+            $this->attachNew($records, $current, false)
         );
 
         // Once we have finished attaching or detaching the records, we will see if we
@@ -160,9 +161,7 @@ trait InteractsWithPivotTable
                 $this->attach($id, $attributes, $touch);
 
                 $changes['attached'][] = $this->castKey($id);
-            }
-
-            // Now we'll try to update an existing pivot record with the attributes that were
+            } // Now we'll try to update an existing pivot record with the attributes that were
             // given to the method. If the model is actually updated we will add it to the
             // list of updated pivot records so we return them back out to the consumer.
             elseif (count($attributes) > 0 &&
@@ -213,7 +212,8 @@ trait InteractsWithPivotTable
         // inserted the records, we will touch the relationships if necessary and the
         // function will return. We can parse the IDs before inserting the records.
         $this->newPivotStatement()->insert($this->formatAttachRecords(
-            $this->parseIds($id), $attributes
+            $this->parseIds($id),
+            $attributes
         ));
 
         if ($touch) {
@@ -240,7 +240,10 @@ trait InteractsWithPivotTable
         // key in the array, with extra attributes to be placed in other columns.
         foreach ($ids as $key => $value) {
             $records[] = $this->formatAttachRecord(
-                $key, $value, $attributes, $hasTimestamps
+                $key,
+                $value,
+                $attributes,
+                $hasTimestamps
             );
         }
 
@@ -261,7 +264,8 @@ trait InteractsWithPivotTable
         list($id, $attributes) = $this->extractAttachIdAndAttributes($key, $value, $attributes);
 
         return array_merge(
-            $this->baseAttachRecord($id, $hasTimestamps), $this->castAttributes($attributes)
+            $this->baseAttachRecord($id, $hasTimestamps),
+            $this->castAttributes($attributes)
         );
     }
 
@@ -382,7 +386,11 @@ trait InteractsWithPivotTable
     public function newPivot(array $attributes = [], $exists = false)
     {
         $pivot = $this->related->newPivot(
-            $this->parent, $attributes, $this->table, $exists, $this->using
+            $this->parent,
+            $attributes,
+            $this->table,
+            $exists,
+            $this->using
         );
 
         return $pivot->setPivotKeys($this->foreignPivotKey, $this->relatedPivotKey);
@@ -449,7 +457,8 @@ trait InteractsWithPivotTable
     public function withPivot($columns)
     {
         $this->pivotColumns = array_merge(
-            $this->pivotColumns, is_array($columns) ? $columns : func_get_args()
+            $this->pivotColumns,
+            is_array($columns) ? $columns : func_get_args()
         );
 
         return $this;

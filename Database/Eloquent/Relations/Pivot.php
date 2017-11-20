@@ -140,7 +140,9 @@ class Pivot extends Model
     {
         if (! isset($this->table)) {
             $this->setTable(str_replace(
-                '\\', '', Str::snake(Str::singular(class_basename($this)))
+                '\\',
+                '',
+                Str::snake(Str::singular(class_basename($this)))
             ));
         }
 

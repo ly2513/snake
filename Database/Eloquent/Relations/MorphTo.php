@@ -125,7 +125,8 @@ class MorphTo extends BelongsTo
                             ->with($this->getQuery()->getEagerLoads());
 
         return $query->whereIn(
-            $instance->getTable().'.'.$instance->getKeyName(), $this->gatherKeysByType($type)
+            $instance->getTable().'.'.$instance->getKeyName(),
+            $this->gatherKeysByType($type)
         )->get();
     }
 
@@ -195,11 +196,13 @@ class MorphTo extends BelongsTo
     public function associate($model)
     {
         $this->parent->setAttribute(
-            $this->foreignKey, $model instanceof Model ? $model->getKey() : null
+            $this->foreignKey,
+            $model instanceof Model ? $model->getKey() : null
         );
 
         $this->parent->setAttribute(
-            $this->morphType, $model instanceof Model ? $model->getMorphClass() : null
+            $this->morphType,
+            $model instanceof Model ? $model->getMorphClass() : null
         );
 
         return $this->parent->setRelation($this->relation, $model);
@@ -265,9 +268,7 @@ class MorphTo extends BelongsTo
     {
         try {
             return parent::__call($method, $parameters);
-        }
-
-        // If we tried to call a method that does not exist on the parent Builder instance,
+        } // If we tried to call a method that does not exist on the parent Builder instance,
         // we'll assume that we want to call a query macro (e.g. withTrashed) that only
         // exists on related models. We will just store the call and replay it later.
         catch (BadMethodCallException $e) {

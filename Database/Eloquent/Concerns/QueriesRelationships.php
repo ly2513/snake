@@ -48,7 +48,11 @@ trait QueriesRelationships
         }
 
         return $this->addHasWhere(
-            $hasQuery, $relation, $operator, $count, $boolean
+            $hasQuery,
+            $relation,
+            $operator,
+            $count,
+            $boolean
         );
     }
 
@@ -205,7 +209,8 @@ trait QueriesRelationships
             // as a sub-select. First, we'll get the "has" query and use that to get the relation
             // count query. We will normalize the relation name then append _count as the name.
             $query = $relation->getRelationExistenceCountQuery(
-                $relation->getRelated()->newQuery(), $this
+                $relation->getRelated()->newQuery(),
+                $this
             );
 
             $query->callScope($constraints);
@@ -258,7 +263,8 @@ trait QueriesRelationships
         return $this->withoutGlobalScopes(
             $from->removedScopes()
         )->mergeWheres(
-            $from->getQuery()->wheres, $whereBindings
+            $from->getQuery()->wheres,
+            $whereBindings
         );
     }
 

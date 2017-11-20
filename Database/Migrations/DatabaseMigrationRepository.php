@@ -1,15 +1,15 @@
 <?php
 
-namespace Illuminate\Database\Migrations;
+namespace Snake\Database\Migrations;
 
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Snake\Database\ConnectionResolverInterface as Resolver;
 
 class DatabaseMigrationRepository implements MigrationRepositoryInterface
 {
     /**
      * The database connection resolver instance.
      *
-     * @var \Illuminate\Database\ConnectionResolverInterface
+     * @var \Snake\Database\ConnectionResolverInterface
      */
     protected $resolver;
 
@@ -30,7 +30,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     /**
      * Create a new database migration repository instance.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
+     * @param  \Snake\Database\ConnectionResolverInterface  $resolver
      * @param  string  $table
      * @return void
      */
@@ -159,7 +159,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     /**
      * Get a query builder for the migration table.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Snake\Database\Query\Builder
      */
     protected function table()
     {
@@ -169,7 +169,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     /**
      * Get the connection resolver instance.
      *
-     * @return \Illuminate\Database\ConnectionResolverInterface
+     * @return \Snake\Database\ConnectionResolverInterface
      */
     public function getConnectionResolver()
     {
@@ -179,7 +179,7 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface
     /**
      * Resolve the database connection instance.
      *
-     * @return \Illuminate\Database\Connection
+     * @return \Snake\Database\Connection
      */
     public function getConnection()
     {

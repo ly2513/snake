@@ -528,9 +528,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // clause to only update this model. Otherwise, we'll just insert them.
         if ($this->exists) {
             $saved = $this->isDirty() ? $this->performUpdate($query) : true;
-        }
-
-        // If the model is brand new, we'll insert it into our database and set the
+        } // If the model is brand new, we'll insert it into our database and set the
         // ID attribute on the model to the value of the newly inserted row's ID
         // which is typically an auto-increment value managed by the database.
         else {
@@ -664,9 +662,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         $attributes = $this->attributes;
         if ($this->getIncrementing()) {
             $this->insertAndSetId($query, $attributes);
-        }
-
-        // If the table isn't incrementing we'll simply insert these attributes as they
+        } // If the table isn't incrementing we'll simply insert these attributes as they
         // are. These attribute arrays must contain an "id" column previously placed
         // there by the developer as the manually determined key for these models.
         else {
@@ -886,8 +882,12 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function newPivot(Model $parent, array $attributes, $table, $exists, $using = null)
     {
-        return $using ? $using::fromRawAttributes($parent, $attributes, $table,
-            $exists) : Pivot::fromAttributes($parent, $attributes, $table, $exists);
+        return $using ? $using::fromRawAttributes(
+            $parent,
+            $attributes,
+            $table,
+            $exists
+        ) : Pivot::fromAttributes($parent, $attributes, $table, $exists);
     }
 
     /**
@@ -942,8 +942,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             return;
         }
 
-        return static::newQueryWithoutScopes()->with(is_string($with) ? func_get_args() : $with)->where($this->getKeyName(),
-                $this->getKey())->first();
+        return static::newQueryWithoutScopes()->with(is_string($with) ? func_get_args() : $with)->where(
+            $this->getKeyName(),
+            $this->getKey()
+        )->first();
     }
 
     /**
@@ -976,8 +978,10 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             $this->getCreatedAtColumn(),
             $this->getUpdatedAtColumn(),
         ];
-        $attributes = Arr::except($this->attributes,
-            $except ? array_unique(array_merge($except, $defaults)) : $defaults);
+        $attributes = Arr::except(
+            $this->attributes,
+            $except ? array_unique(array_merge($except, $defaults)) : $defaults
+        );
 
         return tap(new static, function ($instance) use ($attributes) {
             $instance->setRawAttributes($attributes);

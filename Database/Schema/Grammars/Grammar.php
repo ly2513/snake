@@ -59,7 +59,8 @@ abstract class Grammar extends BaseGrammar
         // We need to prepare several of the elements of the foreign key definition
         // before we can create the SQL, such as wrapping the tables and convert
         // an array of columns to comma-delimited strings for the SQL queries.
-        $sql = sprintf('alter table %s add constraint %s ',
+        $sql = sprintf(
+            'alter table %s add constraint %s ',
             $this->wrapTable($blueprint),
             $this->wrap($command->index)
         );
@@ -67,7 +68,8 @@ abstract class Grammar extends BaseGrammar
         // Once we have the initial portion of the SQL statement we will add on the
         // key name, table name, and referenced columns. These will complete the
         // main portion of the SQL statement and this SQL will almost be done.
-        $sql .= sprintf('foreign key (%s) references %s (%s)',
+        $sql .= sprintf(
+            'foreign key (%s) references %s (%s)',
             $this->columnize($command->columns),
             $this->wrapTable($command->on),
             $this->columnize((array) $command->references)
@@ -206,7 +208,8 @@ abstract class Grammar extends BaseGrammar
     public function wrap($value, $prefixAlias = false)
     {
         return parent::wrap(
-            $value instanceof Fluent ? $value->name : $value, $prefixAlias
+            $value instanceof Fluent ? $value->name : $value,
+            $prefixAlias
         );
     }
 

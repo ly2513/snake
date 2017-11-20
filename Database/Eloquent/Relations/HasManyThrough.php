@@ -142,7 +142,8 @@ class HasManyThrough extends Relation
     public function addEagerConstraints(array $models)
     {
         $this->query->whereIn(
-            $this->getQualifiedFirstKeyName(), $this->getKeys($models, $this->localKey)
+            $this->getQualifiedFirstKeyName(),
+            $this->getKeys($models, $this->localKey)
         );
     }
 
@@ -180,7 +181,8 @@ class HasManyThrough extends Relation
         foreach ($models as $model) {
             if (isset($dictionary[$key = $model->getKey()])) {
                 $model->setRelation(
-                    $relation, $this->related->newCollection($dictionary[$key])
+                    $relation,
+                    $this->related->newCollection($dictionary[$key])
                 );
             }
         }
@@ -283,7 +285,9 @@ class HasManyThrough extends Relation
         }
 
         return $this->where(
-            $this->getRelated()->getQualifiedKeyName(), '=', $id
+            $this->getRelated()->getQualifiedKeyName(),
+            '=',
+            $id
         )->first($columns);
     }
 
@@ -301,7 +305,8 @@ class HasManyThrough extends Relation
         }
 
         return $this->whereIn(
-            $this->getRelated()->getQualifiedKeyName(), $ids
+            $this->getRelated()->getQualifiedKeyName(),
+            $ids
         )->get($columns);
     }
 
@@ -428,7 +433,9 @@ class HasManyThrough extends Relation
         $this->performJoin($query);
 
         return $query->select($columns)->whereColumn(
-            $this->getExistenceCompareKey(), '=', $this->getQualifiedFirstKeyName()
+            $this->getExistenceCompareKey(),
+            '=',
+            $this->getQualifiedFirstKeyName()
         );
     }
 

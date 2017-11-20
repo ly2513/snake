@@ -10,12 +10,13 @@ class Expression
      * @var mixed
      */
     protected $value;
-
+    
     /**
      * Create a new raw query expression.
      *
-     * @param  mixed  $value
-     * @return void
+     * Expression constructor.
+     *
+     * @param $value
      */
     public function __construct($value)
     {

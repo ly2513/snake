@@ -65,7 +65,8 @@ class ResetCommand extends BaseCommand
         }
 
         $this->migrator->reset(
-            $this->getMigrationPaths(), $this->option('pretend')
+            $this->getMigrationPaths(),
+            $this->option('pretend')
         );
 
         // Once the migrator has run we will grab the note output and send it out to

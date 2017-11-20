@@ -225,7 +225,8 @@ class FactoryBuilder
     {
         $definition = call_user_func(
             $this->definitions[$this->class][$this->name],
-            $this->faker, $attributes
+            $this->faker,
+            $attributes
         );
 
         return $this->expandAttributes(
@@ -300,7 +301,8 @@ class FactoryBuilder
 
         return call_user_func(
             $stateAttributes,
-            $this->faker, $attributes
+            $this->faker,
+            $attributes
         );
     }
 

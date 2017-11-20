@@ -150,9 +150,7 @@ class Blueprint
                     $this->{$index}($column->name);
 
                     continue 2;
-                }
-
-                // If the index has been specified on the given column, and it has a string
+                } // If the index has been specified on the given column, and it has a string
                 // value, we'll go ahead and call the index method and pass the name for
                 // the index since the developer specified the explicit name for this.
                 elseif (isset($column->{$index})) {
@@ -1085,7 +1083,8 @@ class Blueprint
         $index = $index ?: $this->createIndexName($type, $columns);
 
         return $this->addCommand(
-            $type, compact('index', 'columns', 'algorithm')
+            $type,
+            compact('index', 'columns', 'algorithm')
         );
     }
 

@@ -6,14 +6,13 @@ use PDO;
 use Snake\Container\Container;
 use Snake\Database\DatabaseManager;
 use Snake\Contracts\Events\Dispatcher;
-use Snake\Support\Traits\CapsuleManagerTrait;
 use Snake\Database\Eloquent\Model as Eloquent;
 use Snake\Database\Connectors\ConnectionFactory;
+use Snake\Support\Fluent;
+use Snake\Contracts\Container\Container as ContainerTrait;
 
 class Manager
 {
-    use CapsuleManagerTrait;
-
     /**
      * The database manager instance.
      *
@@ -186,6 +185,66 @@ class Manager
     public function setEventDispatcher(Dispatcher $dispatcher)
     {
         $this->container->instance('events', $dispatcher);
+    }
+
+    /**
+     * The current globally used instance.
+     *
+     * @var object
+     */
+    protected static $instance;
+
+    /**
+     * The container instance.
+     *
+     * @var \Snake\Contracts\Container\Container
+     */
+    protected $container;
+
+    /**
+     * Setup the IoC container instance.
+     *
+     * @param  \Snake\Contracts\Container\Container  $container
+     * @return void
+     */
+    protected function setupContainer(ContainerTrait $container)
+    {
+        $this->container = $container;
+
+        if (! $this->container->bound('config')) {
+            $this->container->instance('config', new Fluent);
+        }
+    }
+
+    /**
+     * Make this capsule instance available globally.
+     *
+     * @return void
+     */
+    public function setAsGlobal()
+    {
+        static::$instance = $this;
+    }
+
+    /**
+     * Get the IoC container instance.
+     *
+     * @return \Snake\Contracts\Container\Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set the IoC container instance.
+     *
+     * @param  \Snake\Contracts\Container\Container  $container
+     * @return void
+     */
+    public function setContainer(ContainerTrait $container)
+    {
+        $this->container = $container;
     }
 
     /**

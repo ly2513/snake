@@ -147,5 +147,4 @@ class SoftDeleteScope extends SoftDeletingScope
             ]);
         });
     }
-
 }

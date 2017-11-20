@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Database\Migrations;
+namespace Snake\Database\Migrations;
 
 interface MigrationRepositoryInterface
 {

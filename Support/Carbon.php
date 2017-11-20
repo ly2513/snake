@@ -72,5 +72,4 @@ class Carbon extends \DateTime implements JsonSerializable
     {
         return new static(null, $tz);
     }
-
 }

@@ -81,8 +81,8 @@ abstract class Grammar
         }
 
         return $this->wrap(
-            $segments[0]).' as '.$this->wrapValue($segments[1]
-        );
+            $segments[0]
+        ).' as '.$this->wrapValue($segments[1]);
     }
 
     /**

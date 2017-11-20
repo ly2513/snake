@@ -1,33 +1,33 @@
 <?php
 
-namespace Illuminate\Database\Migrations;
+namespace Snake\Database\Migrations;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Snake\Support\Arr;
+use Snake\Support\Str;
+use Snake\Support\Collection;
+use Snake\Filesystem\Filesystem;
+use Snake\Database\ConnectionResolverInterface as Resolver;
 
 class Migrator
 {
     /**
      * The migration repository implementation.
      *
-     * @var \Illuminate\Database\Migrations\MigrationRepositoryInterface
+     * @var \Snake\Database\Migrations\MigrationRepositoryInterface
      */
     protected $repository;
 
     /**
      * The filesystem instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var \Snake\Filesystem\Filesystem
      */
     protected $files;
 
     /**
      * The connection resolver instance.
      *
-     * @var \Illuminate\Database\ConnectionResolverInterface
+     * @var \Snake\Database\ConnectionResolverInterface
      */
     protected $resolver;
 
@@ -55,15 +55,17 @@ class Migrator
     /**
      * Create a new migrator instance.
      *
-     * @param  \Illuminate\Database\Migrations\MigrationRepositoryInterface  $repository
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
-     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param  \Snake\Database\Migrations\MigrationRepositoryInterface  $repository
+     * @param  \Snake\Database\ConnectionResolverInterface  $resolver
+     * @param  \Snake\Filesystem\Filesystem  $files
      * @return void
      */
-    public function __construct(MigrationRepositoryInterface $repository,
-                                Resolver $resolver,
-                                Filesystem $files)
-    {
+    public function __construct(
+        MigrationRepositoryInterface $repository,
+        Resolver $resolver,
+        Filesystem $files
+    ) {
+    
         $this->files = $files;
         $this->resolver = $resolver;
         $this->repository = $repository;
@@ -86,7 +88,8 @@ class Migrator
         $files = $this->getMigrationFiles($paths);
 
         $this->requireFiles($migrations = $this->pendingMigrations(
-            $files, $this->repository->getRan()
+            $files,
+            $this->repository->getRan()
         ));
 
         // Once we have all these migrations that are outstanding we are ready to run
@@ -253,7 +256,8 @@ class Migrator
             $rolledBack[] = $file;
 
             $this->runDown(
-                $file, $migration,
+                $file,
+                $migration,
                 $options['pretend'] ?? false
             );
         }
@@ -304,7 +308,9 @@ class Migrator
         })->all();
 
         return $this->rollbackMigrations(
-            $migrations, $paths, compact('pretend')
+            $migrations,
+            $paths,
+            compact('pretend')
         );
     }
 
@@ -500,7 +506,7 @@ class Migrator
      * Resolve the database connection instance.
      *
      * @param  string  $connection
-     * @return \Illuminate\Database\Connection
+     * @return \Snake\Database\Connection
      */
     public function resolveConnection($connection)
     {
@@ -510,8 +516,8 @@ class Migrator
     /**
      * Get the schema grammar out of a migration connection.
      *
-     * @param  \Illuminate\Database\Connection  $connection
-     * @return \Illuminate\Database\Schema\Grammars\Grammar
+     * @param  \Snake\Database\Connection  $connection
+     * @return \Snake\Database\Schema\Grammars\Grammar
      */
     protected function getSchemaGrammar($connection)
     {
@@ -527,7 +533,7 @@ class Migrator
     /**
      * Get the migration repository instance.
      *
-     * @return \Illuminate\Database\Migrations\MigrationRepositoryInterface
+     * @return \Snake\Database\Migrations\MigrationRepositoryInterface
      */
     public function getRepository()
     {
@@ -547,7 +553,7 @@ class Migrator
     /**
      * Get the file system instance.
      *
-     * @return \Illuminate\Filesystem\Filesystem
+     * @return \Snake\Filesystem\Filesystem
      */
     public function getFilesystem()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Database\Migrations;
+namespace Snake\Database\Migrations;
 
 abstract class Migration
 {

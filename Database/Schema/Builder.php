@@ -70,7 +70,8 @@ class Builder
         $table = $this->connection->getTablePrefix().$table;
 
         return count($this->connection->select(
-            $this->grammar->compileTableExists(), [$table]
+            $this->grammar->compileTableExists(),
+            [$table]
         )) > 0;
     }
 
@@ -84,7 +85,8 @@ class Builder
     public function hasColumn($table, $column)
     {
         return in_array(
-            strtolower($column), array_map('strtolower', $this->getColumnListing($table))
+            strtolower($column),
+            array_map('strtolower', $this->getColumnListing($table))
         );
     }
 
