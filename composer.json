@@ -1,0 +1,18 @@
+{
+  "name": "ly2513/snake",
+  "require": {
+    "php": "~7.0"
+  },
+  "authors": [
+    {
+      "name": "liyong",
+      "email": "yong.li@szypwl.com"
+    }
+  ],
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  }
+}
