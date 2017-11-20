@@ -2,8 +2,6 @@
 
 namespace Snake\Database\Eloquent\Concerns;
 
-use Snake\Support\Str;
-
 trait GuardsAttributes
 {
     /**
@@ -151,8 +149,7 @@ trait GuardsAttributes
             return false;
         }
 
-        return empty($this->getFillable()) &&
-            ! Str::startsWith($key, '_');
+        return empty($this->getFillable()) && ! \Snake\Support\Str::startsWith($key, '_');
     }
 
     /**

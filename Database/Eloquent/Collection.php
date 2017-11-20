@@ -234,7 +234,7 @@ class Collection extends BaseCollection
             return new static($this->items);
         }
 
-        $dictionary = Arr::only($this->getDictionary(), $keys);
+        $dictionary = array_intersect_key($this->getDictionary(), array_flip((array) $keys));
 
         return new static(array_values($dictionary));
     }

@@ -561,7 +561,7 @@ trait HasRelationships
      */
     protected function newRelatedInstance($class)
     {
-        return tap(new $class, function ($instance) {
+        return \Snake\Support\Arr::tap(new $class, function ($instance) {
             if (! $instance->getConnectionName()) {
                 $instance->setConnection($this->connection);
             }

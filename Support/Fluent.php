@@ -2,12 +2,7 @@
 
 namespace Snake\Support;
 
-use ArrayAccess;
-use JsonSerializable;
-use Snake\Contracts\Support\Jsonable;
-use Snake\Contracts\Support\Arrayable;
-
-class Fluent implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
+class Fluent implements \ArrayAccess, Arrayable, Jsonable, \JsonSerializable
 {
     /**
      * All of the attributes set on the container.
@@ -15,12 +10,13 @@ class Fluent implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
      * @var array
      */
     protected $attributes = [];
-
+    
     /**
      * Create a new fluent container instance.
      *
-     * @param  array|object    $attributes
-     * @return void
+     * Fluent constructor.
+     *
+     * @param array $attributes
      */
     public function __construct($attributes = [])
     {

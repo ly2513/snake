@@ -7,9 +7,9 @@
  * Copyright: 深圳优品未来科技有限公司
  */
 require 'Start.php';
-xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_NO_BUILTINS);
+//xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_NO_BUILTINS);
 
-$XHPROF_ROOT = dirname(__DIR__) .DIRECTORY_SEPARATOR . 'xhprof/xhprof_lib/utils/' ;
+//$XHPROF_ROOT = dirname(__DIR__) .DIRECTORY_SEPARATOR . 'xhprof/xhprof_lib/utils/' ;
 
 use Snake\Database\Capsule\Manager as DB;
 use Snake\Model\SmsModel;
@@ -43,12 +43,12 @@ try {
 
 
 $data = SmsModel::select('*')->whereBusinessId(100001)->get()->toArray();
-//print_r($data);
-$xhprof_data = xhprof_disable();
-include_once $XHPROF_ROOT . "xhprof_lib.php";
-include_once $XHPROF_ROOT . "xhprof_runs.php";
-$xhprof_runs = new \XHProfRuns_Default();
-$run_id      = $xhprof_runs->save_run($xhprof_data, "xhprof_foo");
+print_r($data);
+//$xhprof_data = xhprof_disable();
+//include_once $XHPROF_ROOT . "xhprof_lib.php";
+//include_once $XHPROF_ROOT . "xhprof_runs.php";
+//$xhprof_runs = new \XHProfRuns_Default();
+//$run_id      = $xhprof_runs->save_run($xhprof_data, "xhprof_foo");
 
 //$sql = SmsModel::select('*')->whereBusinessId(100001)->toSql();
 //$status = SmsModel::insertGetId($update);

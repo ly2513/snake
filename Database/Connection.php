@@ -2,27 +2,19 @@
 
 namespace Snake\Database;
 
-use PDO;
-use Closure;
-use Exception;
-use PDOStatement;
-use LogicException;
-use DateTimeInterface;
 use Snake\Support\Arr;
 use Snake\Database\Query\Expression;
 use Snake\Contracts\Events\Dispatcher;
 use Snake\Database\Events\QueryExecuted;
-use Doctrine\DBAL\Connection as DoctrineConnection;
+//use Doctrine\DBAL\Connection as DoctrineConnection;
 use Snake\Database\Query\Processors\Processor;
 use Snake\Database\Query\Builder as QueryBuilder;
-use Snake\Database\Schema\Builder as SchemaBuilder;
+//use Snake\Database\Schema\Builder as SchemaBuilder;
 use Snake\Database\Query\Grammars\Grammar as QueryGrammar;
 
 class Connection implements ConnectionInterface
 {
-    use DetectsDeadlocks,
-        DetectsLostConnections,
-        Concerns\ManagesTransactions;
+    use DetectsDeadlocks;
 
     /**
      * The active PDO connection.
@@ -99,7 +91,7 @@ class Connection implements ConnectionInterface
      *
      * @var int
      */
-    protected $fetchMode = PDO::FETCH_OBJ;
+    protected $fetchMode = \PDO::FETCH_OBJ;
 
     /**
      * The number of active transactions.
@@ -152,12 +144,12 @@ class Connection implements ConnectionInterface
 
     /**
      * Create a new database connection instance.
+     * Connection constructor.
      *
-     * @param  \PDO|\Closure     $pdo
-     * @param  string   $database
-     * @param  string   $tablePrefix
-     * @param  array    $config
-     * @return void
+     * @param        $pdo
+     * @param string $database
+     * @param string $tablePrefix
+     * @param array  $config
      */
     public function __construct($pdo, $database = '', $tablePrefix = '', array $config = [])
     {
@@ -380,7 +372,7 @@ class Connection implements ConnectionInterface
      * @param  \PDOStatement  $statement
      * @return \PDOStatement
      */
-    protected function prepared(PDOStatement $statement)
+    protected function prepared(\PDOStatement $statement)
     {
         $statement->setFetchMode($this->fetchMode);
 
@@ -521,7 +513,7 @@ class Connection implements ConnectionInterface
      * @param  \Closure  $callback
      * @return array
      */
-    public function pretend(Closure $callback)
+    public function pretend(\Closure $callback)
     {
         return $this->withFreshQueryLog(function () use ($callback) {
             $this->pretending = true;
@@ -577,7 +569,7 @@ class Connection implements ConnectionInterface
             $statement->bindValue(
                 is_string($key) ? $key : $key + 1,
                 $value,
-                is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
+                is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR
             );
         }
     }
@@ -596,7 +588,7 @@ class Connection implements ConnectionInterface
             // We need to transform all instances of DateTimeInterface into the actual
             // date string. Each query grammar maintains its own date string format
             // so we'll just ask the grammar for the format to get from the date.
-            if ($value instanceof DateTimeInterface) {
+            if ($value instanceof \DateTimeInterface) {
                 $bindings[$key] = $value->format($grammar->getDateFormat());
             } elseif (is_bool($value)) {
                 $bindings[$key] = (int) $value;
@@ -616,7 +608,7 @@ class Connection implements ConnectionInterface
      *
      * @throws \Snake\Database\QueryException
      */
-    protected function run($query, $bindings, Closure $callback)
+    protected function run($query, $bindings, \Closure $callback)
     {
         $this->reconnectIfMissingConnection();
 
@@ -658,7 +650,7 @@ class Connection implements ConnectionInterface
      *
      * @throws \Snake\Database\QueryException
      */
-    protected function runQueryCallback($query, $bindings, Closure $callback)
+    protected function runQueryCallback($query, $bindings, \Closure $callback)
     {
         // To execute the statement, we'll simply call the callback, which will actually
         // run the SQL against the PDO connection. Then we can calculate the time it
@@ -668,7 +660,7 @@ class Connection implements ConnectionInterface
         } // If an exception occurs when attempting to run a query, we'll format the error
         // message to include the bindings with SQL, which will make this exception a
         // lot more helpful to the developer instead of just the database's errors.
-        catch (Exception $e) {
+        catch (\Exception $e) {
             throw new QueryException(
                 $query,
                 $this->prepareBindings($bindings),
@@ -717,7 +709,7 @@ class Connection implements ConnectionInterface
      * @return mixed
      * @throws \Exception
      */
-    protected function handleQueryException($e, $query, $bindings, Closure $callback)
+    protected function handleQueryException($e, $query, $bindings, \Closure $callback)
     {
         if ($this->transactions >= 1) {
             throw $e;
@@ -742,7 +734,7 @@ class Connection implements ConnectionInterface
      *
      * @throws \Snake\Database\QueryException
      */
-    protected function tryAgainIfCausedByLostConnection(QueryException $e, $query, $bindings, Closure $callback)
+    protected function tryAgainIfCausedByLostConnection(QueryException $e, $query, $bindings, \Closure $callback)
     {
         if ($this->causedByLostConnection($e->getPrevious())) {
             $this->reconnect();
@@ -766,7 +758,7 @@ class Connection implements ConnectionInterface
             return call_user_func($this->reconnector, $this);
         }
 
-        throw new LogicException('Lost connection and no reconnector available.');
+        throw new \LogicException('Lost connection and no reconnector available.');
     }
 
     /**
@@ -797,7 +789,7 @@ class Connection implements ConnectionInterface
      * @param  \Closure  $callback
      * @return void
      */
-    public function listen(Closure $callback)
+    public function listen(\Closure $callback)
     {
         if (isset($this->events)) {
             $this->events->listen(Events\QueryExecuted::class, $callback);
@@ -924,7 +916,7 @@ class Connection implements ConnectionInterface
      */
     public function getPdo()
     {
-        if ($this->pdo instanceof Closure) {
+        if ($this->pdo instanceof \Closure) {
             return $this->pdo = call_user_func($this->pdo);
         }
 
@@ -946,7 +938,7 @@ class Connection implements ConnectionInterface
             return $this->getPdo();
         }
 
-        if ($this->readPdo instanceof Closure) {
+        if ($this->readPdo instanceof \Closure) {
             return $this->readPdo = call_user_func($this->readPdo);
         }
 
@@ -984,12 +976,13 @@ class Connection implements ConnectionInterface
     /**
      * Set the reconnect instance on the connection.
      *
-     * @param  callable  $reconnector
+     * @param callable $reConnector
+     *
      * @return $this
      */
-    public function setReconnector(callable $reconnector)
+    public function setReConnector(callable $reConnector)
     {
-        $this->reconnector = $reconnector;
+        $this->reconnector = $reConnector;
 
         return $this;
     }
@@ -1233,7 +1226,7 @@ class Connection implements ConnectionInterface
      * @param  \Closure  $callback
      * @return void
      */
-    public static function resolverFor($driver, Closure $callback)
+    public static function resolverFor($driver, \Closure $callback)
     {
         static::$resolvers[$driver] = $callback;
     }
@@ -1247,5 +1240,242 @@ class Connection implements ConnectionInterface
     public static function getResolver($driver)
     {
         return static::$resolvers[$driver] ?? null;
+    }
+
+    // ================================
+
+    /**
+     * Execute a Closure within a transaction.
+     *
+     * @param  \Closure  $callback
+     * @param  int  $attempts
+     * @return mixed
+     *
+     * @throws \Exception|\Throwable
+     */
+    public function transaction(\Closure $callback, $attempts = 1)
+    {
+        for ($currentAttempt = 1; $currentAttempt <= $attempts; $currentAttempt++) {
+            $this->beginTransaction();
+
+            // We'll simply execute the given callback within a try / catch block and if we
+            // catch any exception we can rollback this transaction so that none of this
+            // gets actually persisted to a database or stored in a permanent fashion.
+            try {
+                return \Snake\Support\Arr::tap($callback($this), function ($result) {
+                    $this->commit();
+                });
+            } // If we catch an exception we'll rollback this transaction and try again if we
+                // are not out of attempts. If we are out of attempts we will just throw the
+                // exception back out and let the developer handle an uncaught exceptions.
+            catch (\Exception $e) {
+                $this->handleTransactionException(
+                    $e,
+                    $currentAttempt,
+                    $attempts
+                );
+            } catch (\Throwable $e) {
+                $this->rollBack();
+
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * Handle an exception encountered when running a transacted statement.
+     *
+     * @param  \Exception  $e
+     * @param  int  $currentAttempt
+     * @param  int  $maxAttempts
+     * @return void
+     *
+     * @throws \Exception
+     */
+    protected function handleTransactionException($e, $currentAttempt, $maxAttempts)
+    {
+        // On a deadlock, MySQL rolls back the entire transaction so we can't just
+        // retry the query. We have to throw this exception all the way out and
+        // let the developer handle it in another way. We will decrement too.
+        if ($this->causedByDeadlock($e) &&
+            $this->transactions > 1) {
+            --$this->transactions;
+
+            throw $e;
+        }
+
+        // If there was an exception we will rollback this transaction and then we
+        // can check if we have exceeded the maximum attempt count for this and
+        // if we haven't we will return and try this query again in our loop.
+        $this->rollBack();
+
+        if ($this->causedByDeadlock($e) &&
+            $currentAttempt < $maxAttempts) {
+            return;
+        }
+
+        throw $e;
+    }
+
+    /**
+     * Start a new database transaction.
+     *
+     * @return void
+     * @throws \Exception
+     */
+    public function beginTransaction()
+    {
+        $this->createTransaction();
+
+        ++$this->transactions;
+
+        $this->fireConnectionEvent('beganTransaction');
+    }
+
+    /**
+     * Create a transaction within the database.
+     *
+     * @return void
+     */
+    protected function createTransaction()
+    {
+        if ($this->transactions == 0) {
+            try {
+                $this->getPdo()->beginTransaction();
+            } catch (\Exception $e) {
+                $this->handleBeginTransactionException($e);
+            }
+        } elseif ($this->transactions >= 1 && $this->queryGrammar->supportsSavepoints()) {
+            $this->createSavepoint();
+        }
+    }
+
+    /**
+     * Create a save point within the database.
+     *
+     * @return void
+     */
+    protected function createSavepoint()
+    {
+        $this->getPdo()->exec(
+            $this->queryGrammar->compileSavepoint('trans'.($this->transactions + 1))
+        );
+    }
+
+    /**
+     * Handle an exception from a transaction beginning.
+     *
+     * @param  \Exception  $e
+     * @return void
+     *
+     * @throws \Exception
+     */
+    protected function handleBeginTransactionException($e)
+    {
+        if ($this->causedByLostConnection($e)) {
+            $this->reconnect();
+
+            $this->pdo->beginTransaction();
+        } else {
+            throw $e;
+        }
+    }
+
+    /**
+     * Commit the active database transaction.
+     *
+     * @return void
+     */
+    public function commit()
+    {
+        if ($this->transactions == 1) {
+            $this->getPdo()->commit();
+        }
+
+        $this->transactions = max(0, $this->transactions - 1);
+
+        $this->fireConnectionEvent('committed');
+    }
+
+    /**
+     * Rollback the active database transaction.
+     *
+     * @param  int|null  $toLevel
+     * @return void
+     */
+    public function rollBack($toLevel = null)
+    {
+        // We allow developers to rollback to a certain transaction level. We will verify
+        // that this given transaction level is valid before attempting to rollback to
+        // that level. If it's not we will just return out and not attempt anything.
+        $toLevel = is_null($toLevel)
+            ? $this->transactions - 1
+            : $toLevel;
+
+        if ($toLevel < 0 || $toLevel >= $this->transactions) {
+            return;
+        }
+
+        // Next, we will actually perform this rollback within this database and fire the
+        // rollback event. We will also set the current transaction level to the given
+        // level that was passed into this method so it will be right from here out.
+        $this->performRollBack($toLevel);
+
+        $this->transactions = $toLevel;
+
+        $this->fireConnectionEvent('rollingBack');
+    }
+
+    /**
+     * Perform a rollback within the database.
+     *
+     * @param  int  $toLevel
+     * @return void
+     */
+    protected function performRollBack($toLevel)
+    {
+        if ($toLevel == 0) {
+            $this->getPdo()->rollBack();
+        } elseif ($this->queryGrammar->supportsSavepoints()) {
+            $this->getPdo()->exec(
+                $this->queryGrammar->compileSavepointRollBack('trans'.($toLevel + 1))
+            );
+        }
+    }
+
+    /**
+     * Get the number of active transactions.
+     *
+     * @return int
+     */
+    public function transactionLevel()
+    {
+        return $this->transactions;
+    }
+
+    /**
+     * Determine if the given exception was caused by a lost connection.
+     *
+     * @param  \Exception  $e
+     * @return bool
+     */
+    protected function causedByLostConnection(\Exception $e)
+    {
+        $message = $e->getMessage();
+
+        return \Snake\Support\Str::contains($message, [
+            'server has gone away',
+            'no connection to the server',
+            'Lost connection',
+            'is dead or not enabled',
+            'Error while sending',
+            'decryption failed or bad record mac',
+            'server closed the connection unexpectedly',
+            'SSL connection has been closed unexpectedly',
+            'Error writing data to the connection',
+            'Resource deadlock avoided',
+            'Transaction() on null',
+            'child connection forced to terminate due to client_idle_limit',
+        ]);
     }
 }

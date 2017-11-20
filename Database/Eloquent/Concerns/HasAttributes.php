@@ -2,12 +2,10 @@
 
 namespace Snake\Database\Eloquent\Concerns;
 
-use LogicException;
-use DateTimeInterface;
 use Snake\Support\Arr;
 use Snake\Support\Str;
 use Snake\Support\Carbon;
-use Snake\Contracts\Support\Arrayable;
+use Snake\Support\Arrayable;
 use Snake\Database\Eloquent\Relations\Relation;
 use Snake\Support\Collection as BaseCollection;
 use Snake\Database\Eloquent\JsonEncodingException;
@@ -409,10 +407,10 @@ trait HasAttributes
         $relation = $this->$method();
 
         if (! $relation instanceof Relation) {
-            throw new LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
+            throw new \LogicException(get_class($this).'::'.$method.' must return a relationship instance.');
         }
 
-        return tap($relation->getResults(), function ($results) use ($method) {
+        return Arr::tap($relation->getResults(), function ($results) use ($method) {
             $this->setRelation($method, $results);
         });
     }
@@ -601,7 +599,7 @@ trait HasAttributes
      */
     protected function getArrayAttributeWithValue($path, $key, $value)
     {
-        return tap($this->getArrayAttributeByKey($key), function (&$array) use ($path, $value) {
+        return Arr::tap($this->getArrayAttributeByKey($key), function (&$array) use ($path, $value) {
             Arr::set($array, str_replace('->', '.', $path), $value);
         });
     }
@@ -763,7 +761,7 @@ trait HasAttributes
      * @param  \DateTimeInterface  $date
      * @return string
      */
-    protected function serializeDate(DateTimeInterface $date)
+    protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format($this->getDateFormat());
     }
@@ -1009,7 +1007,8 @@ trait HasAttributes
         // Here we will spin through every attribute and see if this is in the array of
         // dirty attributes. If it is, we will return true and if we make it through
         // all of the attributes for the entire array we will return false at end.
-        foreach (Arr::wrap($attributes) as $attribute) {
+        $attributes =  ! is_array($attributes) ? [$attributes] : $attributes;
+        foreach ($attributes as $attribute) {
             if (array_key_exists($attribute, $changes)) {
                 return true;
             }

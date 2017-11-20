@@ -28,15 +28,16 @@ abstract class HasOneOrMany extends Relation
      * @var int
      */
     protected static $selfJoinCount = 0;
-
+    
     /**
      * Create a new has one or many relationship instance.
      *
-     * @param  \Snake\Database\Eloquent\Builder  $query
-     * @param  \Snake\Database\Eloquent\Model  $parent
-     * @param  string  $foreignKey
-     * @param  string  $localKey
-     * @return void
+     * HasOneOrMany constructor.
+     *
+     * @param Builder $query
+     * @param Model   $parent
+     * @param         $foreignKey
+     * @param         $localKey
      */
     public function __construct(Builder $query, Model $parent, $foreignKey, $localKey)
     {
@@ -54,7 +55,7 @@ abstract class HasOneOrMany extends Relation
      */
     public function make(array $attributes = [])
     {
-        return tap($this->related->newInstance($attributes), function ($instance) {
+        return \Snake\Support\Arr::tap($this->related->newInstance($attributes), function ($instance) {
             $this->setForeignAttributesForCreate($instance);
         });
     }
@@ -232,7 +233,7 @@ abstract class HasOneOrMany extends Relation
      */
     public function updateOrCreate(array $attributes, array $values = [])
     {
-        return tap($this->firstOrNew($attributes), function ($instance) use ($values) {
+        return \Snake\Support\Arr::tap($this->firstOrNew($attributes), function ($instance) use ($values) {
             $instance->fill($values);
 
             $instance->save();
@@ -275,7 +276,7 @@ abstract class HasOneOrMany extends Relation
      */
     public function create(array $attributes = [])
     {
-        return tap($this->related->newInstance($attributes), function ($instance) {
+        return \Snake\Support\Arr::tap($this->related->newInstance($attributes), function ($instance) {
             $this->setForeignAttributesForCreate($instance);
 
             $instance->save();

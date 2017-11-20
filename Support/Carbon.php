@@ -2,12 +2,11 @@
 
 namespace Snake\Support;
 
-use JsonSerializable;
 //use Carbon\Carbon as BaseCarbon;
 use Snake\Support\Traits\Macroable;
 
 //class Carbon extends BaseCarbon implements JsonSerializable
-class Carbon extends \DateTime implements JsonSerializable
+class Carbon extends \DateTime implements \JsonSerializable
 {
     use Macroable;
 

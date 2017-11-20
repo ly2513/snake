@@ -46,16 +46,16 @@ class BelongsTo extends Relation
      * @var int
      */
     protected static $selfJoinCount = 0;
-
+    
     /**
      * Create a new belongs to relationship instance.
+     * BelongsTo constructor.
      *
-     * @param  \Snake\Database\Eloquent\Builder  $query
-     * @param  \Snake\Database\Eloquent\Model  $child
-     * @param  string  $foreignKey
-     * @param  string  $ownerKey
-     * @param  string  $relation
-     * @return void
+     * @param Builder $query
+     * @param Model   $child
+     * @param         $foreignKey
+     * @param         $ownerKey
+     * @param         $relation
      */
     public function __construct(Builder $query, Model $child, $foreignKey, $ownerKey, $relation)
     {

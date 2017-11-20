@@ -241,7 +241,7 @@ abstract class Grammar extends BaseGrammar
     {
         $table = $this->getTablePrefix().$blueprint->getTable();
 
-        return tap(new TableDiff($table), function ($tableDiff) use ($schema, $table) {
+        return \Snake\Support\Arr::tap(new TableDiff($table), function ($tableDiff) use ($schema, $table) {
             $tableDiff->fromTable = $schema->listTableDetails($table);
         });
     }

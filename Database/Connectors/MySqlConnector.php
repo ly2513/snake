@@ -2,9 +2,7 @@
 
 namespace Snake\Database\Connectors;
 
-use PDO;
-
-class MySqlConnector extends Connector implements ConnectorInterface
+class MySqlConnector extends Connector
 {
     /**
      * Establish a database connection.
@@ -141,7 +139,7 @@ class MySqlConnector extends Connector implements ConnectorInterface
      * @param  array  $config
      * @return void
      */
-    protected function setModes(PDO $connection, array $config)
+    protected function setModes(\PDO $connection, array $config)
     {
         if (isset($config['modes'])) {
             $this->setCustomModes($connection, $config);
@@ -161,7 +159,7 @@ class MySqlConnector extends Connector implements ConnectorInterface
      * @param  array  $config
      * @return void
      */
-    protected function setCustomModes(PDO $connection, array $config)
+    protected function setCustomModes(\PDO $connection, array $config)
     {
         $modes = implode(',', $config['modes']);
 

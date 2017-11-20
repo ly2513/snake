@@ -2,8 +2,6 @@
 
 namespace Snake\Database;
 
-use Snake\Support\Arr;
-use InvalidArgumentException;
 use Snake\Console\Command;
 use Snake\Container\Container;
 
@@ -32,7 +30,7 @@ abstract class Seeder
      */
     public function call($class, $silent = false)
     {
-        $classes = Arr::wrap($class);
+        $classes =  ! is_array($class) ? [$class] : $class;
 
         foreach ($classes as $class) {
             if ($silent === false && isset($this->command)) {
@@ -113,11 +111,9 @@ abstract class Seeder
     public function __invoke()
     {
         if (! method_exists($this, 'run')) {
-            throw new InvalidArgumentException('Method [run] missing from '.get_class($this));
+            throw new \InvalidArgumentException('Method [run] missing from '.get_class($this));
         }
 
-        return isset($this->container)
-                    ? $this->container->call([$this, 'run'])
-                    : $this->run();
+        return isset($this->container) ? $this->container->call([$this, 'run']) : $this->run();
     }
 }

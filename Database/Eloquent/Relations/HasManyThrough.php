@@ -51,18 +51,18 @@ class HasManyThrough extends Relation
      * @var string
      */
     protected $secondLocalKey;
-
+    
     /**
      * Create a new has many through relationship instance.
+     * HasManyThrough constructor.
      *
-     * @param  \Snake\Database\Eloquent\Builder  $query
-     * @param  \Snake\Database\Eloquent\Model  $farParent
-     * @param  \Snake\Database\Eloquent\Model  $throughParent
-     * @param  string  $firstKey
-     * @param  string  $secondKey
-     * @param  string  $localKey
-     * @param  string  $secondLocalKey
-     * @return void
+     * @param Builder $query
+     * @param Model   $farParent
+     * @param Model   $throughParent
+     * @param         $firstKey
+     * @param         $secondKey
+     * @param         $localKey
+     * @param         $secondLocalKey
      */
     public function __construct(Builder $query, Model $farParent, Model $throughParent, $firstKey, $secondKey, $localKey, $secondLocalKey)
     {
