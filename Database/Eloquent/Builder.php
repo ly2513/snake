@@ -2,8 +2,6 @@
 
 namespace Snake\Database\Eloquent;
 
-use Closure;
-use BadMethodCallException;
 use Snake\Support\Arr;
 use Snake\Support\Str;
 //use Snake\Pagination\Paginator;
@@ -217,7 +215,7 @@ class Builder
      */
     public function where($column, $operator = null, $value = null, $boolean = 'and')
     {
-        if ($column instanceof Closure) {
+        if ($column instanceof \Closure) {
             $query = $this->model->newQueryWithoutScopes();
 
             $column($query);
@@ -419,9 +417,9 @@ class Builder
      * @param  \Closure|null  $callback
      * @return \Snake\Database\Eloquent\Model|static|mixed
      */
-    public function firstOr($columns = ['*'], Closure $callback = null)
+    public function firstOr($columns = ['*'], \Closure $callback = null)
     {
-        if ($columns instanceof Closure) {
+        if ($columns instanceof \Closure) {
             $callback = $columns;
 
             $columns = ['*'];
@@ -506,7 +504,7 @@ class Builder
      * @param  \Closure  $constraints
      * @return array
      */
-    protected function eagerLoadRelation(array $models, $name, Closure $constraints)
+    protected function eagerLoadRelation(array $models, $name, \Closure $constraints)
     {
         // First we will "back up" the existing where conditions on the query so we can
         // add our eager constraints. Then we will merge the wheres that were on the
@@ -862,7 +860,7 @@ class Builder
      * @param  \Closure  $callback
      * @return void
      */
-    public function onDelete(Closure $callback)
+    public function onDelete(\Closure $callback)
     {
         $this->onDelete = $callback;
     }
@@ -919,7 +917,7 @@ class Builder
                 // If the scope is a Closure we will just go ahead and call the scope with the
                 // builder instance. The "callScope" method will properly group the clauses
                 // that are added to this query so "where" clauses maintain proper logic.
-                if ($scope instanceof Closure) {
+                if ($scope instanceof \Closure) {
                     $scope($builder);
                 }
 
@@ -999,7 +997,8 @@ class Builder
      */
     protected function groupWhereSliceForScope(QueryBuilder $query, $whereSlice)
     {
-        $whereBooleans = collect($whereSlice)->pluck('boolean');
+        $collect = new \Snake\Support\Collection($whereSlice);
+        $whereBooleans = $collect->pluck('boolean');
 
         // Here we'll check if the given subset of where clauses contains any "or"
         // booleans and in this case create a nested where expression. That way
@@ -1261,7 +1260,7 @@ class Builder
             return $this->localMacros[$method](...$parameters);
         }
 
-        if (isset(static::$macros[$method]) and static::$macros[$method] instanceof Closure) {
+        if (isset(static::$macros[$method]) and static::$macros[$method] instanceof \Closure) {
             return call_user_func_array(static::$macros[$method]->bindTo($this, static::class), $parameters);
         }
 
@@ -1300,11 +1299,11 @@ class Builder
         }
 
         if (! isset(static::$macros[$method])) {
-            throw new BadMethodCallException("Method {$method} does not exist.");
+            throw new \BadMethodCallException("Method {$method} does not exist.");
         }
 
-        if (static::$macros[$method] instanceof Closure) {
-            return call_user_func_array(Closure::bind(static::$macros[$method], null, static::class), $parameters);
+        if (static::$macros[$method] instanceof \Closure) {
+            return call_user_func_array(\Closure::bind(static::$macros[$method], null, static::class), $parameters);
         }
 
         return call_user_func_array(static::$macros[$method], $parameters);

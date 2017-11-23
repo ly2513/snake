@@ -227,42 +227,42 @@ class Arr
      * @param  array|string  $keys
      * @return void
      */
-//    public static function forget(&$array, $keys)
-//    {
-//        $original = &$array;
-//
-//        $keys = (array) $keys;
-//
-//        if (count($keys) === 0) {
-//            return;
-//        }
-//
-//        foreach ($keys as $key) {
-//            // if the exact key exists in the top-level, remove it
-//            if (static::exists($array, $key)) {
-//                unset($array[$key]);
-//
-//                continue;
-//            }
-//
-//            $parts = explode('.', $key);
-//
-//            // clean up before each pass
-//            $array = &$original;
-//
-//            while (count($parts) > 1) {
-//                $part = array_shift($parts);
-//
-//                if (isset($array[$part]) && is_array($array[$part])) {
-//                    $array = &$array[$part];
-//                } else {
-//                    continue 2;
-//                }
-//            }
-//
-//            unset($array[array_shift($parts)]);
-//        }
-//    }
+    public static function forget(&$array, $keys)
+    {
+        $original = &$array;
+
+        $keys = (array) $keys;
+
+        if (count($keys) === 0) {
+            return;
+        }
+
+        foreach ($keys as $key) {
+            // if the exact key exists in the top-level, remove it
+            if (static::exists($array, $key)) {
+                unset($array[$key]);
+
+                continue;
+            }
+
+            $parts = explode('.', $key);
+
+            // clean up before each pass
+            $array = &$original;
+
+            while (count($parts) > 1) {
+                $part = array_shift($parts);
+
+                if (isset($array[$part]) && is_array($array[$part])) {
+                    $array = &$array[$part];
+                } else {
+                    continue 2;
+                }
+            }
+
+            unset($array[array_shift($parts)]);
+        }
+    }
 
     /**
      * Get an item from an array using "dot" notation.
@@ -381,8 +381,9 @@ class Arr
     public static function pluck($array, $value, $key = null)
     {
         $results = [];
-
-        list($value, $key) = static::explodePluckParameters($value, $key);
+        $value = is_string($value) ? explode('.', $value) : $value;
+        $key = is_null($key) || is_array($key) ? $key : explode('.', $key);
+        list($value, $key) = [$value, $key];
 
         foreach ($array as $item) {
             $itemValue = static::data_get($item, $value);

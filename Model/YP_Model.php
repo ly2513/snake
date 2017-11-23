@@ -9,12 +9,13 @@
 namespace Snake\Model;
 
 use Snake\Database\Eloquent\Model;
-use Snake\Database\Eloquent\SoftDelete;
+use Snake\Database\Eloquent\SoftDeletes;
 
 class YP_Model extends Model
 {
     // 开启软删除
-    use SoftDelete;
+    use SoftDeletes;
+
     // 定义软删除字段
     const  DELETED_AT = 'is_delete';
 
@@ -23,6 +24,8 @@ class YP_Model extends Model
     // 处理 Eloquent 的自动维护db 列
     const  CREATED_AT = 'create_time';
     const  UPDATED_AT = 'update_time';
+
+
 
     // 设置create_at/update_at 时间格式为 Unix 时间戳,默认为 DateTime 格式数据
     protected $dateFormat = 'U';

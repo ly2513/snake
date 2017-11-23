@@ -626,8 +626,11 @@ class Builder
      */
     protected function invalidOperator($operator)
     {
-        return !in_array(strtolower($operator), $this->operators, true) && !in_array(strtolower($operator),
-            $this->grammar->getOperators(), true);
+        return !in_array(strtolower($operator), $this->operators, true) && !in_array(
+            strtolower($operator),
+            $this->grammar->getOperators(),
+            true
+        );
     }
 
     /**
@@ -1561,7 +1564,7 @@ class Builder
     {
         return Collection::make($this->orders)->reject(function ($order) use ($column) {
                 return isset($order['column']) ? $order['column'] === $column : false;
-            })->values()->all();
+        })->values()->all();
     }
 
     /**
@@ -1792,8 +1795,10 @@ class Builder
     protected function withoutSelectAliases(array $columns)
     {
         return array_map(function ($column) {
-            return is_string($column) && ($aliasPosition = strpos(strtolower($column),
-                ' as ')) !== false ? substr($column, 0, $aliasPosition) : $column;
+            return is_string($column) && ($aliasPosition = strpos(
+                strtolower($column),
+                ' as '
+            )) !== false ? substr($column, 0, $aliasPosition) : $column;
         }, $columns);
     }
 
@@ -1911,8 +1916,11 @@ class Builder
      */
     public function exists()
     {
-        $results = $this->connection->select($this->grammar->compileExists($this), $this->getBindings(),
-            !$this->useWritePdo);
+        $results = $this->connection->select(
+            $this->grammar->compileExists($this),
+            $this->getBindings(),
+            !$this->useWritePdo
+        );
         // If the results has rows, we will get the row and see if the exists column is a
         // boolean true. If there is no results for this query we will return false as
         // there are no rows for this query at all and we can return that info here.
@@ -2009,8 +2017,10 @@ class Builder
      */
     public function aggregate($function, $columns = ['*'])
     {
-        $results = $this->cloneWithout(['columns'])->cloneWithoutBindings(['select'])->setAggregate($function,
-                $columns)->get($columns);
+        $results = $this->cloneWithout(['columns'])->cloneWithoutBindings(['select'])->setAggregate(
+            $function,
+            $columns
+        )->get($columns);
         if (!$results->isEmpty()) {
             return array_change_key_case((array)$results[0])['aggregate'];
         }
@@ -2090,8 +2100,10 @@ class Builder
         // Finally, we will run this query against the database connection and return
         // the results. We will need to also flatten these bindings before running
         // the query so they are all in one huge, flattened array for execution.
-        return $this->connection->insert($this->grammar->compileInsert($this, $values),
-            $this->cleanBindings(Arr::flatten($values, 1)));
+        return $this->connection->insert(
+            $this->grammar->compileInsert($this, $values),
+            $this->cleanBindings(Arr::flatten($values, 1))
+        );
     }
 
     /**
@@ -2121,8 +2133,10 @@ class Builder
     {
         $sql = $this->grammar->compileUpdate($this, $values);
 
-        return $this->connection->update($sql,
-            $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $values)));
+        return $this->connection->update(
+            $sql,
+            $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $values))
+        );
     }
 
     /**

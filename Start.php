@@ -11,11 +11,10 @@ function do_load_class($className)
 
     $className = str_replace('\\', '/', $className);
     $className = str_replace('Snake/', '', $className);
-
-
+    
     // 加载配置文件
     $path = __DIR__ . DIRECTORY_SEPARATOR . $className . '.php';
-    echo '加载文件 ' .$path .' 成功 '. PHP_EOL;
+    echo '加载文件 ' .$className .' 成功 '. PHP_EOL;
     if (file_exists($path)) {
         require $path;
     }
@@ -34,6 +33,7 @@ $db['default'] = [
     'collation' => 'utf8_general_ci',   // 排序规则
     'prefix'    => '',                  // 表的前缀
 ];
+
 $capsule       = new Snake\Database\Capsule\Manager;
 //
 foreach ($db as $key => $dbConfig) {

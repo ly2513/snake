@@ -157,8 +157,10 @@ class ConnectionFactory
      */
     protected function createPdoResolver(array $config)
     {
-        return array_key_exists('host',
-            $config) ? $this->createPdoResolverWithHosts($config) : $this->createPdoResolverWithoutHosts($config);
+        return array_key_exists(
+            'host',
+            $config
+        ) ? $this->createPdoResolverWithHosts($config) : $this->createPdoResolverWithoutHosts($config);
     }
 
     /**

@@ -141,7 +141,8 @@ class MySqlGrammar extends Grammar
      */
     protected function compileUpdateColumns($values)
     {
-        return collect($values)->map(function ($value, $key) {
+        $collect = new \Snake\Support\Collection($values);
+        return $collect->map(function ($value, $key) {
             if ($this->isJsonSelector($key)) {
                 return $this->compileJsonUpdateColumn($key, new JsonExpression($value));
             } else {
@@ -179,7 +180,8 @@ class MySqlGrammar extends Grammar
      */
     public function prepareBindingsForUpdate(array $bindings, array $values)
     {
-        $values = collect($values)->reject(function ($value, $column) {
+        $collect = new \Snake\Support\Collection($values);
+        $values = $collect->reject(function ($value, $column) {
             return $this->isJsonSelector($column) &&
                 in_array(gettype($value), ['boolean', 'integer', 'double']);
         })->all();

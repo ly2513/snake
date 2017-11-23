@@ -1,10 +1,6 @@
 <?php
 namespace Snake\Database\Eloquent;
 
-use Exception;
-use ArrayAccess;
-use JsonSerializable;
-use BadMethodCallException;
 use Snake\Support\Arr;
 use Snake\Support\Str;
 use Snake\Support\Jsonable;
@@ -16,7 +12,7 @@ use Snake\Database\Eloquent\Relations\Pivot;
 use Snake\Database\Query\Builder as QueryBuilder;
 use Snake\Database\ConnectionResolverInterface as Resolver;
 
-abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
+abstract class Model implements \ArrayAccess, Arrayable, Jsonable, \JsonSerializable
 {
     use Concerns\HasAttributes, Concerns\HasEvents, Concerns\HasGlobalScopes, Concerns\HasRelationships, Concerns\HasTimestamps, Concerns\HidesAttributes, Concerns\GuardsAttributes;
 
@@ -135,9 +131,9 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * Model constructor.
      *
-     * @return void
+     * @param array $attributes
      */
     public function __construct(array $attributes = [])
     {
@@ -179,6 +175,23 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     protected static function bootTraits()
     {
         $class = static::class;
+        foreach (self::class_uses_recursive($class) as $trait) {
+            if (method_exists($class,
+                $method = 'boot' . basename(str_replace('\\', '/', is_object($trait) ? get_class($trait) : $trait)))) {
+                forward_static_call([$class, $method]);
+            }
+        }
+    }
+
+    /**
+     * Returns all traits used by a class, its subclasses and trait of their traits.
+     *
+     * @param  object|string $class
+     *
+     * @return array
+     */
+    public static function class_uses_recursive($class)
+    {
         if (is_object($class)) {
             $class = get_class($class);
         }
@@ -186,13 +199,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         foreach (array_merge([$class => $class], class_parents($class)) as $class) {
             $results += self::trait_uses_recursive($class);
         }
-        foreach (array_unique($results) as $trait) {
-            $trait = is_object($trait) ? get_class($trait) : $trait;
-            $method = basename(str_replace('\\', '/', $trait));
-            if (method_exists($class, $method = 'boot' . $method)) {
-                forward_static_call([$class, $method]);
-            }
-        }
+
+        return array_unique($results);
     }
 
     /**
@@ -219,7 +227,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public static function clearBootedModels()
     {
-        static::$booted = [];
+        static::$booted       = [];
         static::$globalScopes = [];
     }
 
@@ -289,7 +297,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // This method just provides a convenient way for us to generate fresh model
         // instances of this current model. It is particularly useful during the
         // hydration of new objects via the Eloquent query builder instances.
-        $model = new static((array)$attributes);
+        $model         = new static((array)$attributes);
         $model->exists = $exists;
         $model->setConnection($this->getConnectionName());
 
@@ -634,8 +642,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     protected function getKeyForSaveQuery()
     {
-        return $this->original[$this->getKeyName()]
-        ?? $this->getKey();
+        return $this->original[$this->getKeyName()] ?? $this->getKey();
     }
 
     /**
@@ -674,7 +681,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // We will go ahead and set the exists property to true, so that it is set when
         // the created event is fired, just in case the developer tries to update it
         // during the event. This will allow them to do so and run an update here.
-        $this->exists = true;
+        $this->exists             = true;
         $this->wasRecentlyCreated = true;
         $this->fireModelEvent('created', false);
 
@@ -708,7 +715,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         // for the operation. The developers can then check this number as a boolean
         // type value or get this total count of records deleted for logging, etc.
         $count = 0;
-        $ids = is_array($ids) ? $ids : func_get_args();
+        $ids   = is_array($ids) ? $ids : func_get_args();
         // We will actually pull the models from the database table and call delete on
         // each of them individually so that their events get fired properly with a
         // correct set of attributes in case the developers wants to check these.
@@ -733,7 +740,7 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
     public function delete()
     {
         if (is_null($this->getKeyName())) {
-            throw new Exception('No primary key defined on model.');
+            throw new \Exception('No primary key defined on model.');
         }
         // If the model doesn't exist, there is nothing to delete so we'll just return
         // immediately and not do anything else. Otherwise, we will continue with a
@@ -882,12 +889,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function newPivot(Model $parent, array $attributes, $table, $exists, $using = null)
     {
-        return $using ? $using::fromRawAttributes(
-            $parent,
-            $attributes,
-            $table,
-            $exists
-        ) : Pivot::fromAttributes($parent, $attributes, $table, $exists);
+        return $using ? $using::fromRawAttributes($parent, $attributes, $table,
+            $exists) : Pivot::fromAttributes($parent, $attributes, $table, $exists);
     }
 
     /**
@@ -942,10 +945,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
             return;
         }
 
-        return static::newQueryWithoutScopes()->with(is_string($with) ? func_get_args() : $with)->where(
-            $this->getKeyName(),
-            $this->getKey()
-        )->first();
+        return static::newQueryWithoutScopes()->with(is_string($with) ? func_get_args() : $with)->where($this->getKeyName(),
+            $this->getKey())->first();
     }
 
     /**
@@ -973,15 +974,13 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
      */
     public function replicate(array $except = null)
     {
-        $defaults = [
+        $defaults   = [
             $this->getKeyName(),
             $this->getCreatedAtColumn(),
             $this->getUpdatedAtColumn(),
         ];
-        $attributes = Arr::except(
-            $this->attributes,
-            $except ? array_unique(array_merge($except, $defaults)) : $defaults
-        );
+        $attributes = Arr::except($this->attributes,
+            $except ? array_unique(array_merge($except, $defaults)) : $defaults);
 
         return Arr::tap(new static, function ($instance) use ($attributes) {
             $instance->setRawAttributes($attributes);
@@ -1410,8 +1409,8 @@ abstract class Model implements ArrayAccess, Arrayable, Jsonable, JsonSerializab
         }
         try {
             return $this->newQuery()->$method(...$parameters);
-        } catch (BadMethodCallException $e) {
-            throw new BadMethodCallException(sprintf('Call to undefined method %s::%s()', get_class($this), $method));
+        } catch (\BadMethodCallException $e) {
+            throw new \BadMethodCallException(sprintf('Call to undefined method %s::%s()', get_class($this), $method));
         }
     }
 

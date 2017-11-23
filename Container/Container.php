@@ -963,8 +963,10 @@ class Container implements \ArrayAccess, ContainerContract
     protected function fireAfterResolvingCallbacks($abstract, $object)
     {
         $this->fireCallbackArray($object, $this->globalAfterResolvingCallbacks);
-        $this->fireCallbackArray($object,
-            $this->getCallbacksForType($abstract, $object, $this->afterResolvingCallbacks));
+        $this->fireCallbackArray(
+            $object,
+            $this->getCallbacksForType($abstract, $object, $this->afterResolvingCallbacks)
+        );
     }
 
     /**
